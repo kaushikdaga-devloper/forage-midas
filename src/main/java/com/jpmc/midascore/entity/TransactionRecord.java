@@ -7,44 +7,46 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-// Marks this class as a JPA entity, meaning it corresponds to a database table
-@Entity 
+@Entity
 public class TransactionRecord {
 
-    // Marks 'id' as the primary key and configures auto-generation
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Stores the amount of the transaction
-    private double amount;
+    // Keep original amount
+    private float amount;
 
-    // Establishes a many-to-one relationship with UserRecord for the sender
-    // Many transactions can have the same sender user.
-    @ManyToOne 
-    @JoinColumn(name = "sender_id", nullable = false) // Defines the foreign key column in the transaction_record table
+    // --- ADD THIS FIELD ---
+    // Stores the incentive amount obtained from the API
+    private float incentiveAmount;
+    // --------------------
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
     private UserRecord sender;
 
-    // Establishes a many-to-one relationship with UserRecord for the recipient
-    @ManyToOne 
-    @JoinColumn(name = "recipient_id", nullable = false) // Defines the foreign key column
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
     private UserRecord recipient;
 
     // --- Constructors ---
-    
+
     // Default constructor (required by JPA)
     public TransactionRecord() {
     }
 
-    // Constructor for creating new records
-    public TransactionRecord(double amount, UserRecord sender, UserRecord recipient) {
+    // --- MODIFY Constructor to include incentiveAmount ---
+    public TransactionRecord(float amount, float incentiveAmount, UserRecord sender, UserRecord recipient) {
         this.amount = amount;
+        this.incentiveAmount = incentiveAmount; // Set the new field
         this.sender = sender;
         this.recipient = recipient;
     }
+    // ----------------------------------------------------
 
-    // --- Getters and Setters --- 
-    // (Required by JPA and useful for accessing/modifying data)
+    // --- Getters and Setters ---
+    // (Keep existing ones)
 
     public Long getId() {
         return id;
@@ -54,11 +56,11 @@ public class TransactionRecord {
         this.id = id;
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -78,14 +80,25 @@ public class TransactionRecord {
         this.recipient = recipient;
     }
 
-    // Optional: toString() method for logging/debugging
+    // --- ADD Getter and Setter for incentiveAmount ---
+    public float getIncentiveAmount() {
+        return incentiveAmount;
+    }
+
+    public void setIncentiveAmount(float incentiveAmount) {
+        this.incentiveAmount = incentiveAmount;
+    }
+    // ------------------------------------------------
+
+    // Optional: toString() updated
     @Override
     public String toString() {
         return "TransactionRecord{" +
                 "id=" + id +
                 ", amount=" + amount +
-                ", sender=" + (sender != null ? sender.getName() : "null") + // Avoid NullPointerException
-                ", recipient=" + (recipient != null ? recipient.getName() : "null") + // Avoid NullPointerException
+                ", incentiveAmount=" + incentiveAmount + // Include new field
+                ", sender=" + (sender != null ? sender.getName() : "null") +
+                ", recipient=" + (recipient != null ? recipient.getName() : "null") +
                 '}';
     }
 }
