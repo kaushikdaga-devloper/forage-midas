@@ -1,0 +1,22 @@
+# src/test/resources/application.yml
+
+spring:
+  kafka:
+    producer:
+      # Make sure the test producer sends simple Strings
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer 
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      # Make sure the test consumer expects simple Strings
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # Ensure it reads from the beginning
+      auto-offset-reset: earliest
+
+# Keep logging verbose for tests
+logging:
+  level:
+    root: INFO
+    com.jpmc.midascore.listener: DEBUG 
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: INFO
